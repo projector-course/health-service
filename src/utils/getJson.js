@@ -7,17 +7,17 @@ function getJson(url) {
       const { headers, data } = res;
       const { 'content-type': contentType } = headers;
       if (!/^application\/json/.test(contentType)) {
-        throw new HttpRequestError(REQUEST_ERROR_TYPE.RESPONSE_ERROR);
+        throw new HttpRequestError(REQUEST_ERROR_TYPE.RESPONSE_ERROR, 'Wron content-type');
       }
       if (typeof data === 'string') {
-        throw new HttpRequestError(REQUEST_ERROR_TYPE.DATA_ERROR);
+        throw new HttpRequestError(REQUEST_ERROR_TYPE.DATA_ERROR, 'Wron data format');
       }
       return data;
     })
     .catch((e) => {
       if (e instanceof HttpRequestError) throw e;
-      if (e.response) throw new HttpRequestError(REQUEST_ERROR_TYPE.RESPONSE_ERROR);
-      else if (e.request) throw new HttpRequestError(REQUEST_ERROR_TYPE.NETWORK_ERROR);
+      if (e.response) throw new HttpRequestError(REQUEST_ERROR_TYPE.RESPONSE_ERROR, e.message);
+      else if (e.request) throw new HttpRequestError(REQUEST_ERROR_TYPE.NETWORK_ERROR, e.message);
       throw e;
     });
 }
